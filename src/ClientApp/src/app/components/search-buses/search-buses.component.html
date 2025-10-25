@@ -1,0 +1,171 @@
+<div class="min-h-screen bg-gray-50 py-8">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Header -->
+    <div class="text-center mb-8">
+      <h1 class="text-4xl font-bold text-gray-900 mb-2">Bus Ticket Reservation</h1>
+      <p class="text-gray-600">Search and book your bus tickets easily</p>
+    </div>
+
+    <!-- Search Form -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+      <h2 class="text-2xl font-semibold text-gray-800 mb-4">Search Buses</h2>
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="space-y-4">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Origin -->
+          <div>
+            <label for="origin" class="block text-sm font-medium text-gray-700 mb-2">
+              From
+            </label>
+            <input
+              id="origin"
+              type="text"
+              formControlName="origin"
+              placeholder="Enter origin city"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="searchForm.get('origin')?.invalid && searchForm.get('origin')?.touched"
+            />
+            @if (searchForm.get('origin')?.invalid && searchForm.get('origin')?.touched) {
+              <p class="text-red-500 text-sm mt-1">Origin is required</p>
+            }
+          </div>
+
+          <!-- Destination -->
+          <div>
+            <label for="destination" class="block text-sm font-medium text-gray-700 mb-2">
+              To
+            </label>
+            <input
+              id="destination"
+              type="text"
+              formControlName="destination"
+              placeholder="Enter destination city"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched"
+            />
+            @if (searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched) {
+              <p class="text-red-500 text-sm mt-1">Destination is required</p>
+            }
+          </div>
+
+          <!-- Departure Date -->
+          <div>
+            <label for="departureDate" class="block text-sm font-medium text-gray-700 mb-2">
+              Departure Date
+            </label>
+            <input
+              id="departureDate"
+              type="date"
+              formControlName="departureDate"
+              class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="searchForm.get('departureDate')?.invalid && searchForm.get('departureDate')?.touched"
+            />
+            @if (searchForm.get('departureDate')?.invalid && searchForm.get('departureDate')?.touched) {
+              <p class="text-red-500 text-sm mt-1">Departure date is required</p>
+            }
+          </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="flex gap-4">
+          <button
+            type="submit"
+            [disabled]="loading"
+            class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
+          >
+            @if (loading) {
+              <span>Searching...</span>
+            } @else {
+              <span>Search Buses</span>
+            }
+          </button>
+          <button
+            type="button"
+            (click)="resetSearch()"
+            class="px-6 py-3 border border-gray-300 text-gray-700 rounded-md font-semibold hover:bg-gray-50 transition duration-200"
+          >
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Error Message -->
+    @if (error) {
+      <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-8">
+        {{ error }}
+      </div>
+    }
+
+    <!-- Search Results -->
+    @if (searched && !loading) {
+      <div class="bg-white rounded-lg shadow-md p-6">
+        <h2 class="text-2xl font-semibold text-gray-800 mb-4">
+          Available Buses
+          @if (buses.length > 0) {
+            <span class="text-gray-500 text-base font-normal">({{ buses.length }} found)</span>
+          }
+        </h2>
+
+        @if (buses.length === 0) {
+          <div class="text-center py-12">
+            <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+            </svg>
+            <h3 class="mt-2 text-lg font-medium text-gray-900">No buses found</h3>
+            <p class="mt-1 text-gray-500">Try adjusting your search criteria.</p>
+          </div>
+        } @else {
+          <div class="space-y-4">
+            @for (bus of buses; track bus.id) {
+              <div class="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition duration-200">
+                <div class="flex flex-col md:flex-row md:items-center md:justify-between">
+                  <div class="flex-1">
+                    <div class="flex items-center gap-3 mb-3">
+                      <h3 class="text-xl font-semibold text-gray-900">{{ bus.busName }}</h3>
+                      <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
+                        {{ bus.busNumber }}
+                      </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <p class="text-sm text-gray-500">Route</p>
+                        <p class="text-gray-900 font-medium">{{ bus.origin }} → {{ bus.destination }}</p>
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">Time</p>
+                        <p class="text-gray-900 font-medium">{{ bus.departureTime }} - {{ bus.arrivalTime }}</p>
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">Available Seats</p>
+                        <p class="text-gray-900 font-medium">{{ bus.availableSeats }} / {{ bus.totalSeats }}</p>
+                      </div>
+                      <div>
+                        <p class="text-sm text-gray-500">Price per Seat</p>
+                        <p class="text-gray-900 font-medium text-lg">${{ bus.pricePerSeat }}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-4 md:mt-0 md:ml-6">
+                    <button
+                      (click)="viewSeatPlan(bus.id)"
+                      [disabled]="bus.availableSeats === 0"
+                      class="w-full md:w-auto px-6 py-3 bg-green-600 text-white rounded-md font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
+                    >
+                      @if (bus.availableSeats === 0) {
+                        <span>Sold Out</span>
+                      } @else {
+                        <span>Select Seats</span>
+                      }
+                    </button>
+                  </div>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,6 @@
+/* Component-specific styles */
+@media print {
+  button {
+    display: none;
+  }
+}
