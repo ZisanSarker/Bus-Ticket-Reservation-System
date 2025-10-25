@@ -1,4 +1,5 @@
 using BusReservationSystem.Infrastructure.Data;
+using BusReservationSystem.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,10 +13,19 @@ public static class DependencyInjection
         IConfiguration configuration)
     {
         // Add DbContext with PostgreSQL
-        services.AddDbContext<ApplicationDbContext>(options =>
+        services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
-                b => b.MigrationsAssembly(typeof(ApplicationDbContext).Assembly.FullName)));
+                b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
+
+        // Register repositories and UnitOfWork
+        services.AddScoped<Application.Contracts.Persistence.IBusRepository, BusRepository>();
+        services.AddScoped<Application.Contracts.Persistence.IRouteRepository, RouteRepository>();
+        services.AddScoped<Application.Contracts.Persistence.IPassengerRepository, PassengerRepository>();
+        services.AddScoped<Application.Contracts.Persistence.ISeatRepository, SeatRepository>();
+        services.AddScoped<Application.Contracts.Persistence.IBusScheduleRepository, BusScheduleRepository>();
+        services.AddScoped<Application.Contracts.Persistence.ITicketRepository, TicketRepository>();
+        services.AddScoped<Application.Contracts.Persistence.IUnitOfWork, UnitOfWork>();
 
         return services;
     }

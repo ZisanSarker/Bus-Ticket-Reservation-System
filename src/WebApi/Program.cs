@@ -1,5 +1,6 @@
 using BusReservationSystem.Application;
 using BusReservationSystem.Infrastructure;
+using BusReservationSystem.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,5 +40,8 @@ app.UseCors("AllowAngularApp");
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Apply migrations and seed initial data
+await app.Services.MigrateAndSeedAsync();
 
 app.Run();
