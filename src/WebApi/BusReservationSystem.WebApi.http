@@ -1,6 +1,127 @@
 @BusReservationSystem.WebApi_HostAddress = http://localhost:5032
 
-GET {{BusReservationSystem.WebApi_HostAddress}}/weatherforecast/
+### Health Check
+GET {{BusReservationSystem.WebApi_HostAddress}}/api/health
 Accept: application/json
+
+###
+
+### Search Available Buses - Valid Request
+GET {{BusReservationSystem.WebApi_HostAddress}}/api/search?from=Dhaka&to=Chittagong&journeyDate=2025-10-30
+Accept: application/json
+
+###
+
+### Search Available Buses - Another Route
+GET {{BusReservationSystem.WebApi_HostAddress}}/api/search?from=Dhaka&to=Sylhet&journeyDate=2025-10-28
+Accept: application/json
+
+###
+
+### Search Available Buses - Missing Parameters (Should return 400)
+GET {{BusReservationSystem.WebApi_HostAddress}}/api/search?from=Dhaka&journeyDate=2025-10-30
+Accept: application/json
+
+###
+
+### Search Available Buses - Past Date (Should return 400)
+GET {{BusReservationSystem.WebApi_HostAddress}}/api/search?from=Dhaka&to=Chittagong&journeyDate=2020-01-01
+Accept: application/json
+
+###
+
+### Get Seat Plan - Valid Schedule ID (Replace with actual ID from search results)
+GET {{BusReservationSystem.WebApi_HostAddress}}/api/booking/seatplan/00000000-0000-0000-0000-000000000001
+Accept: application/json
+
+###
+
+### Get Seat Plan - Invalid Schedule ID (Should return 404)
+GET {{BusReservationSystem.WebApi_HostAddress}}/api/booking/seatplan/99999999-9999-9999-9999-999999999999
+Accept: application/json
+
+###
+
+### Book Seats - Valid Request (Replace busScheduleId with actual ID)
+POST {{BusReservationSystem.WebApi_HostAddress}}/api/booking/book
+Content-Type: application/json
+Accept: application/json
+
+{
+  "busScheduleId": "00000000-0000-0000-0000-000000000001",
+  "passengerName": "John Doe",
+  "passengerPhone": "+8801712345678",
+  "seatNumbers": [1, 2]
+}
+
+###
+
+### Book Seats - Multiple Seats
+POST {{BusReservationSystem.WebApi_HostAddress}}/api/booking/book
+Content-Type: application/json
+Accept: application/json
+
+{
+  "busScheduleId": "00000000-0000-0000-0000-000000000001",
+  "passengerName": "Jane Smith",
+  "passengerPhone": "+8801987654321",
+  "seatNumbers": [5, 6, 7]
+}
+
+###
+
+### Book Seats - Invalid Phone Number (Should return validation error)
+POST {{BusReservationSystem.WebApi_HostAddress}}/api/booking/book
+Content-Type: application/json
+Accept: application/json
+
+{
+  "busScheduleId": "00000000-0000-0000-0000-000000000001",
+  "passengerName": "Test User",
+  "passengerPhone": "invalid-phone",
+  "seatNumbers": [10]
+}
+
+###
+
+### Book Seats - Empty Seat Numbers (Should return 400)
+POST {{BusReservationSystem.WebApi_HostAddress}}/api/booking/book
+Content-Type: application/json
+Accept: application/json
+
+{
+  "busScheduleId": "00000000-0000-0000-0000-000000000001",
+  "passengerName": "Test User",
+  "passengerPhone": "+8801712345678",
+  "seatNumbers": []
+}
+
+###
+
+### Book Seats - Already Booked Seat (Should return 409 Conflict)
+POST {{BusReservationSystem.WebApi_HostAddress}}/api/booking/book
+Content-Type: application/json
+Accept: application/json
+
+{
+  "busScheduleId": "00000000-0000-0000-0000-000000000001",
+  "passengerName": "Another User",
+  "passengerPhone": "+8801555555555",
+  "seatNumbers": [1]
+}
+
+###
+
+### Book Seats - Invalid Schedule ID (Should return 404)
+POST {{BusReservationSystem.WebApi_HostAddress}}/api/booking/book
+Content-Type: application/json
+Accept: application/json
+
+{
+  "busScheduleId": "99999999-9999-9999-9999-999999999999",
+  "passengerName": "Test User",
+  "passengerPhone": "+8801712345678",
+  "seatNumbers": [1]
+}
 
 ###
