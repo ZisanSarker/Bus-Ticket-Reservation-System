@@ -1,6 +1,8 @@
 using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
+using BusReservationSystem.Application.Contracts.Services;
+using BusReservationSystem.Application.Services;
 
 namespace BusReservationSystem.Application;
 
@@ -16,6 +18,10 @@ public static class DependencyInjection
 
         // Add FluentValidation
         services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+        // Application services
+        services.AddScoped<ISearchService, SearchService>();
+        services.AddScoped<IBookingService, BookingService>();
 
         return services;
     }
