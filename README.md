@@ -42,7 +42,7 @@ This solution follows Clean Architecture with clear separation of concerns:
 
 - [.NET 9 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)
 - [Node.js 18+](https://nodejs.org/)
-- [PostgreSQL 14+](https://www.postgresql.org/download/)
+- PostgreSQL 14+ (local) or Docker
 
 ## 🛠️ Getting Started
 
@@ -53,9 +53,18 @@ git clone <repository-url>
 cd Bus-Ticket-Reservation-System
 ```
 
-### 2. Configure PostgreSQL
+### 2. Database (choose one)
 
-Update the connection string in `src/WebApi/appsettings.json`:
+Option A — Docker (recommended)
+
+```bash
+# Start PostgreSQL in Docker
+docker compose up -d
+```
+
+Option B — Local PostgreSQL
+
+Update the connection string in `src/WebApi/appsettings.json` to match your local setup:
 
 ```json
 {
@@ -65,24 +74,27 @@ Update the connection string in `src/WebApi/appsettings.json`:
 }
 ```
 
-### 3. Run Database Migrations
+### 3. Apply database migrations
+
+Migrations are applied automatically on API startup. Alternatively, you can apply them manually:
 
 ```bash
-cd src/Infrastructure
-dotnet ef migrations add InitialCreate --startup-project ../WebApi
-dotnet ef database update --startup-project ../WebApi
+# Idempotent SQL script is available at db/migrations.sql
+dotnet tool restore
+dotnet tool run dotnet-ef database update --project src/Infrastructure/BusReservationSystem.Infrastructure.csproj --startup-project src/WebApi/BusReservationSystem.WebApi.csproj
 ```
 
 ### 4. Run the Backend API
 
+Run on HTTP (avoids dev HTTPS cert issues):
+
 ```bash
-cd src/WebApi
-dotnet run
+# From repo root
+ASPNETCORE_URLS=http://localhost:5000 dotnet run --project src/WebApi/BusReservationSystem.WebApi.csproj
 ```
 
-The API will be available at:
-- HTTPS: `https://localhost:5001`
-- HTTP: `http://localhost:5000`
+Swagger UI: http://localhost:5000
+Health: http://localhost:5000/api/health
 
 ### 5. Run the Frontend
 
@@ -92,7 +104,19 @@ npm install
 npm start
 ```
 
-The Angular app will be available at `http://localhost:4200`
+The Angular app will be available at http://localhost:4200 and is configured to call the API at http://localhost:5000/api (see `src/ClientApp/src/environments/environment.ts`).
+
+> CORS is enabled for http://localhost:4200 in the API (`Program.cs`).
+
+### 6. End-to-end flow (Search → Seat Plan → Booking)
+
+1. Open http://localhost:4200
+2. Use the Search form (examples: From "Dhaka" → To "Chittagong"; Journey Date: tomorrow)
+3. Pick a result to view Seat Plan
+4. Select one or more seats and proceed to Booking
+5. Enter passenger info and confirm — you should see ticket IDs and total price
+
+Note: The database seeds a handful of buses, routes and tomorrow’s schedules on first run.
 
 ## 📦 Project Structure Details
 
@@ -145,18 +169,40 @@ dotnet test /p:CollectCoverage=true
 ## 📝 API Documentation
 
 Once the API is running, you can access:
-- OpenAPI specification: `https://localhost:5001/openapi/v1.json`
-- Health check: `https://localhost:5001/api/health`
+- Swagger UI: `http://localhost:5000`
+- OpenAPI JSON: `http://localhost:5000/swagger/v1/swagger.json`
+- Health check: `http://localhost:5000/api/health`
+
+Key endpoints used by the frontend:
+- `GET /api/search?from={city}&to={city}&journeyDate=YYYY-MM-DD` — Available buses
+- `GET /api/booking/seatplan/{busScheduleId}` — Seat layout and availability
+- `POST /api/booking/book` — Confirm booking
 
 ## 🔧 Development
 
 ### Adding a New Migration
 
 ```bash
-cd src/Infrastructure
-dotnet ef migrations add <MigrationName> --startup-project ../WebApi
-dotnet ef database update --startup-project ../WebApi
+dotnet tool restore
+dotnet tool run dotnet-ef migrations add <MigrationName> \
+  --project src/Infrastructure/BusReservationSystem.Infrastructure.csproj \
+  --startup-project src/WebApi/BusReservationSystem.WebApi.csproj
+
+dotnet tool run dotnet-ef database update \
+  --project src/Infrastructure/BusReservationSystem.Infrastructure.csproj \
+  --startup-project src/WebApi/BusReservationSystem.WebApi.csproj
 ```
+
+Pre-generated idempotent SQL is available in `db/migrations.sql`.
+
+### Frontend API base URL
+
+Update `src/ClientApp/src/environments/environment.ts` if you change backend port or protocol.
+
+### Troubleshooting
+
+- Database connection error (password): ensure PostgreSQL is running and the credentials in `appsettings.json` match your instance. If using Docker, run `docker compose up -d` from repo root.
+- HTTPS issues in dev: prefer running API on HTTP with `ASPNETCORE_URLS=http://localhost:5000` as shown above.
 
 ### Building the Solution
 
