@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { SeatPlanDto, SeatDto } from '../../models/seat.model';
+import { ToastContainerComponent } from '../shared/toast-container/toast-container.component';
 
 @Component({
   selector: 'app-seat-plan',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, ToastContainerComponent],
   templateUrl: './seat-plan.component.html',
   styleUrl: './seat-plan.component.css'
 })
@@ -49,11 +50,11 @@ export class SeatPlanComponent implements OnInit {
   }
 
   toggleSeat(seat: SeatDto): void {
-    if (!seat.isAvailable) {
+    if (seat.isBooked) {
       return;
     }
 
-    const index = this.selectedSeats.findIndex(s => s.id === seat.id);
+    const index = this.selectedSeats.findIndex(s => s.seatNumber === seat.seatNumber);
     if (index > -1) {
       this.selectedSeats.splice(index, 1);
     } else {
@@ -62,14 +63,14 @@ export class SeatPlanComponent implements OnInit {
   }
 
   isSeatSelected(seat: SeatDto): boolean {
-    return this.selectedSeats.some(s => s.id === seat.id);
+    return this.selectedSeats.some(s => s.seatNumber === seat.seatNumber);
   }
 
   getTotalPrice(): number {
     if (!this.seatPlan) return 0;
-    // Assuming price per seat is same for all seats
-    // In real scenario, you might get this from the bus details
-    return this.selectedSeats.length * 100; // Default price
+    // Price is not provided by seat plan; backend returns total on booking
+    // Keep a placeholder per-seat estimate if needed
+    return this.selectedSeats.length * 100; // Placeholder price
   }
 
   proceedToBooking(): void {
@@ -81,7 +82,7 @@ export class SeatPlanComponent implements OnInit {
     this.router.navigate(['/booking'], {
       queryParams: {
         busScheduleId: this.busScheduleId,
-        seatIds: this.selectedSeats.map(s => s.id).join(',')
+        seatNumbers: this.selectedSeats.map(s => s.seatNumber).join(',')
       }
     });
   }
@@ -91,7 +92,7 @@ export class SeatPlanComponent implements OnInit {
     
     const seatsByRow = new Map<number, SeatDto[]>();
     this.seatPlan.seats.forEach(seat => {
-      const row = seat.position.row;
+      const row = seat.row;
       if (!seatsByRow.has(row)) {
         seatsByRow.set(row, []);
       }
@@ -100,10 +101,21 @@ export class SeatPlanComponent implements OnInit {
 
     // Sort seats within each row by column
     seatsByRow.forEach(seats => {
-      seats.sort((a, b) => a.position.column - b.position.column);
+      seats.sort((a, b) => a.seatNumber - b.seatNumber);
     });
 
     return seatsByRow;
+  }
+
+  // Derive a 2+2 column layout from seat number when column isn't provided
+  getColumnIndex(seat: SeatDto): number {
+    // Assumes seat numbers increment left-to-right within rows
+    return ((seat.seatNumber - 1) % 4) + 1;
+  }
+
+  getAvailableCount(): number {
+    if (!this.seatPlan) return 0;
+    return this.seatPlan.seats.filter(s => !s.isBooked).length;
   }
 
   goBack(): void {

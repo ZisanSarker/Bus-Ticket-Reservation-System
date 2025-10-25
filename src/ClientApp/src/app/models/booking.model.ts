@@ -1,17 +1,13 @@
 export interface BookSeatInputDto {
-  busScheduleId: number;
-  seatIds: number[];
+  busScheduleId: string;
   passengerName: string;
-  passengerEmail: string;
   passengerPhone: string;
+  seatNumbers: number[];
 }
 
 export interface BookSeatResultDto {
-  ticketId: number;
-  busScheduleId: number;
-  passengerName: string;
-  seatNumbers: string[];
-  totalAmount: number;
-  bookingDate: string;
-  status: string;
+  busScheduleId: string;
+  ticketIds: string[];
+  seatNumbers: number[];
+  totalPrice: number;
 }

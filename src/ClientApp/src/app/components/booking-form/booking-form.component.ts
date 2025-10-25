@@ -4,18 +4,20 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { BookingService } from '../../services/booking.service';
 import { BookSeatInputDto, BookSeatResultDto } from '../../models/booking.model';
+import { ToastService } from '../../services/toast.service';
+import { ToastContainerComponent } from '../shared/toast-container/toast-container.component';
 
 @Component({
   selector: 'app-booking-form',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule, ToastContainerComponent],
   templateUrl: './booking-form.component.html',
   styleUrl: './booking-form.component.css'
 })
 export class BookingFormComponent implements OnInit {
   bookingForm!: FormGroup;
-  busScheduleId!: number;
-  seatIds: number[] = [];
+  busScheduleId!: string;
+  seatNumbers: number[] = [];
   loading = false;
   error: string | null = null;
   bookingResult: BookSeatResultDto | null = null;
@@ -24,15 +26,16 @@ export class BookingFormComponent implements OnInit {
     private fb: FormBuilder,
     private route: ActivatedRoute,
     private router: Router,
-    private bookingService: BookingService
+    private bookingService: BookingService,
+    private toast: ToastService
   ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe(params => {
-      this.busScheduleId = +params['busScheduleId'];
-      this.seatIds = params['seatIds'] ? params['seatIds'].split(',').map((id: string) => +id) : [];
+      this.busScheduleId = params['busScheduleId'];
+      this.seatNumbers = params['seatNumbers'] ? params['seatNumbers'].split(',').map((n: string) => +n) : [];
 
-      if (!this.busScheduleId || this.seatIds.length === 0) {
+      if (!this.busScheduleId || this.seatNumbers.length === 0) {
         this.error = 'Invalid booking parameters. Please select seats first.';
         return;
       }
@@ -44,7 +47,6 @@ export class BookingFormComponent implements OnInit {
   initializeForm(): void {
     this.bookingForm = this.fb.group({
       passengerName: ['', [Validators.required, Validators.minLength(2)]],
-      passengerEmail: ['', [Validators.required, Validators.email]],
       passengerPhone: ['', [Validators.required, Validators.pattern(/^\+?[\d\s-()]+$/)]]
     });
   }
@@ -56,9 +58,8 @@ export class BookingFormComponent implements OnInit {
 
       const bookingData: BookSeatInputDto = {
         busScheduleId: this.busScheduleId,
-        seatIds: this.seatIds,
+        seatNumbers: this.seatNumbers,
         passengerName: this.bookingForm.value.passengerName,
-        passengerEmail: this.bookingForm.value.passengerEmail,
         passengerPhone: this.bookingForm.value.passengerPhone
       };
 
@@ -66,9 +67,13 @@ export class BookingFormComponent implements OnInit {
         next: (result) => {
           this.bookingResult = result;
           this.loading = false;
+          this.toast.success('Booking confirmed');
+          // Navigate back to seat plan and let it refresh
+          this.router.navigate(['/bus', this.busScheduleId, 'seatplan']);
         },
         error: (err) => {
           this.error = err.error?.message || 'Failed to book seats. Please try again.';
+          this.toast.error(this.error);
           this.loading = false;
           console.error('Error booking seats:', err);
         }

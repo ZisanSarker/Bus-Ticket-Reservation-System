@@ -29,9 +29,9 @@ export class BookingService {
   }
 
   /**
-   * Get booking details by ticket ID
+   * Get booking details by ticket ID (not used in current flow)
    */
-  getBookingDetails(ticketId: number): Observable<BookSeatResultDto> {
+  getBookingDetails(ticketId: string): Observable<BookSeatResultDto> {
     return this.http.get<BookSeatResultDto>(`${this.apiUrl}/${ticketId}`);
   }
 }

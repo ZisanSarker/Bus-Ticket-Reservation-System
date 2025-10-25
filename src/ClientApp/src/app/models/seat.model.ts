@@ -1,17 +1,12 @@
 export interface SeatPlanDto {
-  busScheduleId: number;
-  busNumber: string;
+  busScheduleId: string;
   totalSeats: number;
-  availableSeats: number;
   seats: SeatDto[];
 }
 
 export interface SeatDto {
-  id: number;
-  seatNumber: string;
-  isAvailable: boolean;
-  position: {
-    row: number;
-    column: number;
-  };
+  seatId: string;
+  seatNumber: number;
+  row: number;
+  isBooked: boolean;
 }

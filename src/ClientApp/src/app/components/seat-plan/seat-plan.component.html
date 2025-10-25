@@ -1,4 +1,5 @@
 <div class="min-h-screen bg-gray-50 py-8">
+  <app-toast-container />
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
     <!-- Loading State -->
     @if (loading) {
@@ -26,7 +27,7 @@
           <div class="flex items-center justify-between">
             <div>
               <h1 class="text-3xl font-bold text-gray-900 mb-2">Select Your Seats</h1>
-              <p class="text-gray-600">Bus: {{ seatPlan.busNumber }}</p>
+              <p class="text-gray-600">Bus Seat Plan</p>
             </div>
             <button
               (click)="goBack()"
@@ -39,7 +40,7 @@
             </button>
           </div>
           
-          <div class="mt-4 flex gap-6">
+            <div class="mt-4 flex gap-6">
             <div class="flex items-center gap-2">
               <div class="w-8 h-8 bg-green-500 rounded border-2 border-green-600"></div>
               <span class="text-sm text-gray-700">Available</span>
@@ -49,13 +50,17 @@
               <span class="text-sm text-gray-700">Selected</span>
             </div>
             <div class="flex items-center gap-2">
-              <div class="w-8 h-8 bg-gray-400 rounded border-2 border-gray-500"></div>
+              <div class="w-8 h-8 bg-orange-500 rounded border-2 border-orange-600"></div>
               <span class="text-sm text-gray-700">Booked</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <div class="w-8 h-8 bg-red-500 rounded border-2 border-red-600"></div>
+              <span class="text-sm text-gray-700">Sold</span>
             </div>
           </div>
 
           <div class="mt-4 text-sm text-gray-600">
-            Available: {{ seatPlan.availableSeats }} / {{ seatPlan.totalSeats }} seats
+            Available: {{ getAvailableCount() }} / {{ seatPlan.totalSeats }} seats
           </div>
         </div>
 
@@ -72,25 +77,25 @@
             <div class="space-y-4">
               @for (row of getSeatsByRow() | keyvalue; track row.key) {
                 <div class="flex justify-center gap-2">
-                  @for (seat of row.value; track seat.id) {
+                  @for (seat of row.value; track seat.seatId) {
                     <button
                       (click)="toggleSeat(seat)"
-                      [disabled]="!seat.isAvailable"
+                      [disabled]="seat.isBooked"
                       [class]="
                         'w-12 h-12 rounded border-2 font-semibold text-sm transition-all duration-200 ' +
                         (isSeatSelected(seat) 
                           ? 'bg-blue-500 border-blue-600 text-white hover:bg-blue-600' 
-                          : seat.isAvailable 
+                          : !seat.isBooked
                             ? 'bg-green-500 border-green-600 text-white hover:bg-green-600 hover:scale-105' 
-                            : 'bg-gray-400 border-gray-500 text-gray-700 cursor-not-allowed')
+                            : 'bg-orange-500 border-orange-600 text-white cursor-not-allowed')
                       "
-                      [title]="seat.isAvailable ? 'Click to select seat ' + seat.seatNumber : 'Seat already booked'"
+                      [title]="!seat.isBooked ? 'Click to select seat ' + seat.seatNumber : 'Seat not available'"
                     >
                       {{ seat.seatNumber }}
                     </button>
                     
                     <!-- Add aisle space after 2nd column -->
-                    @if (seat.position.column === 2) {
+                    @if (getColumnIndex(seat) === 2) {
                       <div class="w-8"></div>
                     }
                   }
@@ -117,7 +122,7 @@
                   <div class="mb-4">
                     <h3 class="text-sm font-medium text-gray-700 mb-2">Selected Seats:</h3>
                     <div class="flex flex-wrap gap-2">
-                      @for (seat of selectedSeats; track seat.id) {
+                      @for (seat of selectedSeats; track seat.seatId) {
                         <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
                           {{ seat.seatNumber }}
                         </span>
