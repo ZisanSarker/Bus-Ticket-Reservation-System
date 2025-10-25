@@ -31,9 +31,9 @@ export class SearchBusesComponent implements OnInit {
 
   initializeForm(): void {
     this.searchForm = this.fb.group({
-      origin: ['', Validators.required],
-      destination: ['', Validators.required],
-      departureDate: ['', Validators.required]
+      from: ['', Validators.required],
+      to: ['', Validators.required],
+      journeyDate: ['', Validators.required]
     });
   }
 
@@ -57,8 +57,8 @@ export class SearchBusesComponent implements OnInit {
     }
   }
 
-  viewSeatPlan(busId: number): void {
-    this.router.navigate(['/bus', busId, 'seatplan']);
+  viewSeatPlan(busScheduleId: string): void {
+    this.router.navigate(['/bus', busScheduleId, 'seatplan']);
   }
 
   resetSearch(): void {

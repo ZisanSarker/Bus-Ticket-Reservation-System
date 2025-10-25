@@ -8,26 +8,20 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class BusService {
-  private apiUrl = `${environment.apiUrl}/api/search`;
+  // environment.apiUrl already includes '/api' base
+  private apiUrl = `${environment.apiUrl}/search`;
 
   constructor(private http: HttpClient) {}
 
   /**
-   * Search for available buses based on origin, destination, and date
+   * Search for available buses based on from, to, and journeyDate
    */
   searchBuses(searchParams: BusSearchParams): Observable<AvailableBusDto[]> {
-    let params = new HttpParams()
-      .set('origin', searchParams.origin)
-      .set('destination', searchParams.destination)
-      .set('departureDate', searchParams.departureDate);
+    const params = new HttpParams()
+      .set('from', searchParams.from)
+      .set('to', searchParams.to)
+      .set('journeyDate', searchParams.journeyDate);
 
     return this.http.get<AvailableBusDto[]>(this.apiUrl, { params });
-  }
-
-  /**
-   * Get bus details by ID
-   */
-  getBusById(busId: number): Observable<AvailableBusDto> {
-    return this.http.get<AvailableBusDto>(`${this.apiUrl}/${busId}`);
   }
 }

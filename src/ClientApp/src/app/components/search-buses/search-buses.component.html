@@ -11,55 +11,55 @@
       <h2 class="text-2xl font-semibold text-gray-800 mb-4">Search Buses</h2>
       <form [formGroup]="searchForm" (ngSubmit)="onSearch()" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <!-- Origin -->
+          <!-- From -->
           <div>
-            <label for="origin" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="from" class="block text-sm font-medium text-gray-700 mb-2">
               From
             </label>
             <input
-              id="origin"
+              id="from"
               type="text"
-              formControlName="origin"
+              formControlName="from"
               placeholder="Enter origin city"
               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              [class.border-red-500]="searchForm.get('origin')?.invalid && searchForm.get('origin')?.touched"
+              [class.border-red-500]="searchForm.get('from')?.invalid && searchForm.get('from')?.touched"
             />
-            @if (searchForm.get('origin')?.invalid && searchForm.get('origin')?.touched) {
+            @if (searchForm.get('from')?.invalid && searchForm.get('from')?.touched) {
               <p class="text-red-500 text-sm mt-1">Origin is required</p>
             }
           </div>
 
-          <!-- Destination -->
+          <!-- To -->
           <div>
-            <label for="destination" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="to" class="block text-sm font-medium text-gray-700 mb-2">
               To
             </label>
             <input
-              id="destination"
+              id="to"
               type="text"
-              formControlName="destination"
+              formControlName="to"
               placeholder="Enter destination city"
               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              [class.border-red-500]="searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched"
+              [class.border-red-500]="searchForm.get('to')?.invalid && searchForm.get('to')?.touched"
             />
-            @if (searchForm.get('destination')?.invalid && searchForm.get('destination')?.touched) {
+            @if (searchForm.get('to')?.invalid && searchForm.get('to')?.touched) {
               <p class="text-red-500 text-sm mt-1">Destination is required</p>
             }
           </div>
 
-          <!-- Departure Date -->
+          <!-- Journey Date -->
           <div>
-            <label for="departureDate" class="block text-sm font-medium text-gray-700 mb-2">
+            <label for="journeyDate" class="block text-sm font-medium text-gray-700 mb-2">
               Departure Date
             </label>
             <input
-              id="departureDate"
+              id="journeyDate"
               type="date"
-              formControlName="departureDate"
+              formControlName="journeyDate"
               class="w-full px-4 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              [class.border-red-500]="searchForm.get('departureDate')?.invalid && searchForm.get('departureDate')?.touched"
+              [class.border-red-500]="searchForm.get('journeyDate')?.invalid && searchForm.get('journeyDate')?.touched"
             />
-            @if (searchForm.get('departureDate')?.invalid && searchForm.get('departureDate')?.touched) {
+            @if (searchForm.get('journeyDate')?.invalid && searchForm.get('journeyDate')?.touched) {
               <p class="text-red-500 text-sm mt-1">Departure date is required</p>
             }
           </div>
@@ -115,48 +115,82 @@
             <p class="mt-1 text-gray-500">Try adjusting your search criteria.</p>
           </div>
         } @else {
-          <div class="space-y-4">
-            @for (bus of buses; track bus.id) {
+          <div class="hidden md:block">
+            <div class="overflow-x-auto">
+              <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Company Name</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Bus Name</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Start/Arrival Time</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Seats Left</th>
+                    <th class="px-4 py-3 text-left text-sm font-semibold text-gray-700">Price</th>
+                    <th class="px-4 py-3"></th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200 bg-white">
+                  @for (bus of buses; track bus.busScheduleId) {
+                    <tr class="hover:bg-gray-50">
+                      <td class="px-4 py-3">{{ bus.companyName }}</td>
+                      <td class="px-4 py-3">{{ bus.busName }}</td>
+                      <td class="px-4 py-3">{{ bus.startTime }} - {{ bus.arrivalTime }}</td>
+                      <td class="px-4 py-3">{{ bus.seatsLeft }}</td>
+                      <td class="px-4 py-3">${{ bus.price }}</td>
+                      <td class="px-4 py-3 text-right">
+                        <button
+                          (click)="viewSeatPlan(bus.busScheduleId)"
+                          [disabled]="bus.seatsLeft === 0"
+                          class="px-4 py-2 bg-green-600 text-white rounded-md font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition"
+                        >
+                          View Seats
+                        </button>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Card layout for small screens -->
+          <div class="space-y-4 md:hidden">
+            @for (bus of buses; track bus.busScheduleId) {
               <div class="border border-gray-200 rounded-lg p-6 hover:shadow-lg transition duration-200">
                 <div class="flex flex-col md:flex-row md:items-center md:justify-between">
                   <div class="flex-1">
-                    <div class="flex items-center gap-3 mb-3">
-                      <h3 class="text-xl font-semibold text-gray-900">{{ bus.busName }}</h3>
-                      <span class="px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
-                        {{ bus.busNumber }}
-                      </span>
-                    </div>
+                    <h3 class="text-xl font-semibold text-gray-900">{{ bus.companyName }}</h3>
+                    <p class="text-gray-700 mb-3">{{ bus.busName }}</p>
                     
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>
                         <p class="text-sm text-gray-500">Route</p>
-                        <p class="text-gray-900 font-medium">{{ bus.origin }} → {{ bus.destination }}</p>
+                        <p class="text-gray-900 font-medium">{{ bus.from }} → {{ bus.to }}</p>
                       </div>
                       <div>
                         <p class="text-sm text-gray-500">Time</p>
-                        <p class="text-gray-900 font-medium">{{ bus.departureTime }} - {{ bus.arrivalTime }}</p>
+                        <p class="text-gray-900 font-medium">{{ bus.startTime }} - {{ bus.arrivalTime }}</p>
                       </div>
                       <div>
                         <p class="text-sm text-gray-500">Available Seats</p>
-                        <p class="text-gray-900 font-medium">{{ bus.availableSeats }} / {{ bus.totalSeats }}</p>
+                        <p class="text-gray-900 font-medium">{{ bus.seatsLeft }} / {{ bus.totalSeats }}</p>
                       </div>
                       <div>
                         <p class="text-sm text-gray-500">Price per Seat</p>
-                        <p class="text-gray-900 font-medium text-lg">${{ bus.pricePerSeat }}</p>
+                        <p class="text-gray-900 font-medium text-lg">${{ bus.price }}</p>
                       </div>
                     </div>
                   </div>
 
                   <div class="mt-4 md:mt-0 md:ml-6">
                     <button
-                      (click)="viewSeatPlan(bus.id)"
-                      [disabled]="bus.availableSeats === 0"
+                      (click)="viewSeatPlan(bus.busScheduleId)"
+                      [disabled]="bus.seatsLeft === 0"
                       class="w-full md:w-auto px-6 py-3 bg-green-600 text-white rounded-md font-semibold hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
                     >
-                      @if (bus.availableSeats === 0) {
+                      @if (bus.seatsLeft === 0) {
                         <span>Sold Out</span>
                       } @else {
-                        <span>Select Seats</span>
+                        <span>View Seats</span>
                       }
                     </button>
                   </div>

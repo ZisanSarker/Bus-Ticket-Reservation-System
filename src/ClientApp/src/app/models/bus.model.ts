@@ -1,18 +1,21 @@
 export interface AvailableBusDto {
-  id: number;
-  busNumber: string;
+  busScheduleId: string; // GUID
+  busId: string; // GUID
   busName: string;
-  departureTime: string;
-  arrivalTime: string;
-  origin: string;
-  destination: string;
-  availableSeats: number;
+  companyName: string;
+  from: string;
+  to: string;
+  journeyDate: string; // ISO date (yyyy-MM-dd)
+  startTime: string; // e.g., HH:mm:ss
+  arrivalTime: string; // e.g., HH:mm:ss
+  price: number;
   totalSeats: number;
-  pricePerSeat: number;
+  seatsLeft: number;
+  durationMinutes: number;
 }
 
 export interface BusSearchParams {
-  origin: string;
-  destination: string;
-  departureDate: string;
+  from: string;
+  to: string;
+  journeyDate: string; // yyyy-MM-dd
 }

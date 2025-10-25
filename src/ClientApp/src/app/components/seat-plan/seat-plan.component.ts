@@ -16,7 +16,7 @@ export class SeatPlanComponent implements OnInit {
   selectedSeats: SeatDto[] = [];
   loading = false;
   error: string | null = null;
-  busScheduleId!: number;
+  busScheduleId!: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -26,7 +26,7 @@ export class SeatPlanComponent implements OnInit {
 
   ngOnInit(): void {
     this.route.params.subscribe(params => {
-      this.busScheduleId = +params['id'];
+      this.busScheduleId = params['id'];
       this.loadSeatPlan();
     });
   }

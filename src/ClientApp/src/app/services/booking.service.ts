@@ -9,14 +9,15 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class BookingService {
-  private apiUrl = `${environment.apiUrl}/api/booking`;
+  // environment.apiUrl already includes '/api' base
+  private apiUrl = `${environment.apiUrl}/booking`;
 
   constructor(private http: HttpClient) {}
 
   /**
    * Get seat plan for a specific bus schedule
    */
-  getSeatPlan(busScheduleId: number): Observable<SeatPlanDto> {
+  getSeatPlan(busScheduleId: string): Observable<SeatPlanDto> {
     return this.http.get<SeatPlanDto>(`${this.apiUrl}/seatplan/${busScheduleId}`);
   }
 
