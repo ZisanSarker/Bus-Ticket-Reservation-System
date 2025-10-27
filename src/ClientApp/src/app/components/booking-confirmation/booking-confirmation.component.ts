@@ -18,8 +18,9 @@ import { ToastContainerComponent } from '../shared/toast-container/toast-contain
   
   <!-- Success State -->
   @if (bookingResult) {
-    <div class="max-w-3xl mx-auto px-4 py-8">
-      <div class="bg-white rounded-lg shadow-md p-8">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <!-- Screen-only success message -->
+      <div class="no-print bg-white rounded-lg shadow-md p-8 mb-6">
         <div class="text-center mb-6">
           <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
             <svg class="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -30,28 +31,14 @@ import { ToastContainerComponent } from '../shared/toast-container/toast-contain
           <p class="text-gray-600">Your ticket has been successfully booked</p>
         </div>
 
-        <div class="border-t border-b border-gray-200 py-6 mb-6">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <p class="text-sm text-gray-500 mb-1">Ticket ID</p>
-              <p class="text-lg font-semibold text-gray-900">{{ bookingResult.ticketIds.join(', ') }}</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-500 mb-1">Seat Numbers</p>
-              <p class="text-lg font-semibold text-gray-900">{{ bookingResult.seatNumbers.join(', ') }}</p>
-            </div>
-            <div>
-              <p class="text-sm text-gray-500 mb-1">Total Amount</p>
-              <p class="text-lg font-semibold text-green-600">৳ {{ bookingResult.totalPrice }}</p>
-            </div>
-          </div>
-        </div>
-
         <div class="flex flex-col sm:flex-row gap-4">
           <button
             (click)="printTicket()"
-            class="flex-1 bg-gray-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-gray-700 transition duration-200"
+            class="flex-1 bg-gray-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-gray-700 transition duration-200 flex items-center justify-center gap-2"
           >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+            </svg>
             Print Ticket
           </button>
           <button
@@ -60,6 +47,150 @@ import { ToastContainerComponent } from '../shared/toast-container/toast-contain
           >
             Book Another Ticket
           </button>
+        </div>
+      </div>
+
+      <!-- Professional Ticket Design (Two-Column Layout for One Page) -->
+      <div id="ticket-container" class="bg-white rounded-lg shadow-xl overflow-hidden border-2 border-gray-300">
+        <!-- Ticket Header -->
+        <div class="bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-4">
+          <div class="flex items-center justify-between">
+            <div>
+              <h2 class="text-2xl font-bold mb-1">BUS TICKET</h2>
+              <p class="text-red-100 text-xs">Bus Reservation System</p>
+            </div>
+            <div class="text-right">
+              <div class="bg-white text-red-600 px-3 py-2 rounded">
+                <p class="text-xs font-semibold">TICKET NO.</p>
+                <p class="text-base font-bold">{{ bookingResult.ticketIds[0] }}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Two-Column Ticket Body -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-0 border-b-2 border-gray-300">
+          <!-- Left Column -->
+          <div class="p-6 border-r-2 border-gray-300">
+            <!-- Journey Details -->
+            <div class="mb-6">
+              <h3 class="text-sm font-bold text-white bg-red-600 px-3 py-2 mb-3">JOURNEY DETAILS</h3>
+              
+              <div class="space-y-4">
+                <!-- From -->
+                <div class="border-l-4 border-red-600 pl-3">
+                  <p class="text-xs font-semibold text-gray-500 uppercase">From</p>
+                  <p class="text-base font-bold text-gray-900">{{ getSelectedBoardingPoint()?.stopName || 'N/A' }}</p>
+                  <p class="text-sm text-gray-600">{{ getSelectedBoardingPoint()?.time || '' }}</p>
+                </div>
+
+                <!-- To -->
+                <div class="border-l-4 border-red-600 pl-3">
+                  <p class="text-xs font-semibold text-gray-500 uppercase">To</p>
+                  <p class="text-base font-bold text-gray-900">{{ getSelectedDroppingPoint()?.stopName || 'N/A' }}</p>
+                  <p class="text-sm text-gray-600">{{ getSelectedDroppingPoint()?.time || '' }}</p>
+                </div>
+
+                <!-- Journey Date -->
+                <div class="border-l-4 border-red-600 pl-3">
+                  <p class="text-xs font-semibold text-gray-500 uppercase">Journey Date</p>
+                  <p class="text-base font-bold text-gray-900">{{ getCurrentDate() }}</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Passenger Information -->
+            <div class="mb-6">
+              <h3 class="text-sm font-bold text-white bg-red-600 px-3 py-2 mb-3">PASSENGER INFORMATION</h3>
+              
+              <div class="space-y-3">
+                <div>
+                  <p class="text-xs font-semibold text-gray-500 uppercase">Passenger Name</p>
+                  <p class="text-base font-semibold text-gray-900">{{ getPassengerName() }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-gray-500 uppercase">Mobile Number</p>
+                  <p class="text-base font-semibold text-gray-900">{{ getMobileNumber() }}</p>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Seat Number(s)</p>
+                  <div class="flex flex-wrap gap-2">
+                    @for (seat of bookingResult.seatNumbers; track seat) {
+                      <span class="inline-flex items-center justify-center bg-red-600 text-white font-bold text-base px-3 py-1 rounded min-w-[50px]">
+                        {{ seat }}
+                      </span>
+                    }
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column -->
+          <div class="p-6">
+            <!-- Fare Details -->
+            <div class="mb-6">
+              <h3 class="text-sm font-bold text-white bg-red-600 px-3 py-2 mb-3">FARE DETAILS</h3>
+              
+              <div class="bg-gray-50 rounded p-4 space-y-2">
+                <div class="flex justify-between items-center text-sm">
+                  <span class="text-gray-700">Seat Fare</span>
+                  <span class="text-gray-900 font-semibold">৳{{ bookingResult.seatNumbers.length * (seatPlan?.baseFare || 0) }}</span>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                  <span class="text-gray-600">({{ bookingResult.seatNumbers.length }} × ৳{{ seatPlan?.baseFare || 0 }})</span>
+                  <span></span>
+                </div>
+                <div class="flex justify-between items-center text-sm">
+                  <span class="text-gray-700">Service Charge</span>
+                  <span class="text-gray-900 font-semibold">৳{{ seatPlan?.serviceCharge || 0 }}</span>
+                </div>
+                <div class="border-t-2 border-gray-300 pt-2 mt-2">
+                  <div class="flex justify-between items-center">
+                    <span class="text-base font-bold text-gray-900">TOTAL</span>
+                    <span class="text-xl font-bold text-green-600">৳{{ bookingResult.totalPrice }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Important Instructions -->
+            <div class="mb-4">
+              <h3 class="text-sm font-bold text-white bg-yellow-600 px-3 py-2 mb-3">IMPORTANT INSTRUCTIONS</h3>
+              
+              <div class="bg-yellow-50 border-l-4 border-yellow-400 p-3">
+                <ul class="space-y-1 text-xs text-yellow-800">
+                  <li class="flex items-start">
+                    <span class="mr-2">•</span>
+                    <span>Arrive at boarding point 15 minutes early</span>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="mr-2">•</span>
+                    <span>Carry a valid photo ID for verification</span>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="mr-2">•</span>
+                    <span>Non-transferable and non-refundable</span>
+                  </li>
+                  <li class="flex items-start">
+                    <span class="mr-2">•</span>
+                    <span>Keep this ticket until journey end</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Booking Date -->
+            <div class="mt-4 pt-4 border-t border-gray-200">
+              <p class="text-xs text-gray-600">Booking Date:</p>
+              <p class="text-sm font-semibold text-gray-900">{{ getCurrentDateTime() }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Ticket Footer -->
+        <div class="bg-gray-100 px-6 py-3">
+          <p class="text-center text-sm font-semibold text-gray-700">Thank you for choosing our service!</p>
         </div>
       </div>
     </div>
@@ -398,11 +529,57 @@ import { ToastContainerComponent } from '../shared/toast-container/toast-contain
 /* Print styles for ticket */
 @media print {
   .no-print {
-    display: none;
+    display: none !important;
   }
   
   body {
     background: white;
+    margin: 0;
+    padding: 0;
+  }
+
+  #ticket-container {
+    box-shadow: none !important;
+    border: 2px solid #000 !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    page-break-inside: avoid;
+  }
+
+  /* Force two-column layout on print */
+  .grid-cols-1 {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Optimize colors for print */
+  .bg-gradient-to-r {
+    background: #dc2626 !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Ensure all colors print correctly */
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* Reduce padding for compact one-page layout */
+  #ticket-container .p-6 {
+    padding: 1rem !important;
+  }
+
+  /* Adjust font sizes for better fit */
+  #ticket-container h3 {
+    font-size: 0.875rem !important;
+  }
+
+  /* Ensure borders show in print */
+  .border-r-2,
+  .border-b-2,
+  .border-l-4,
+  .border-t-2 {
+    border-color: #000 !important;
   }
 }
 
@@ -758,5 +935,35 @@ export class BookingConfirmationComponent implements OnInit {
   getBookedSeatsCount(): number {
     if (!this.seatPlan) return 0;
     return this.seatPlan.seats.filter(s => s.isBooked).length;
+  }
+
+  // Helper methods for ticket display
+  getPassengerName(): string {
+    // Since we don't collect passenger name in this form, we use a placeholder
+    return 'Passenger';
+  }
+
+  getMobileNumber(): string {
+    return this.bookingForm?.get('mobileNumber')?.value || 'N/A';
+  }
+
+  getCurrentDate(): string {
+    const date = new Date();
+    return date.toLocaleDateString('en-GB', { 
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric' 
+    });
+  }
+
+  getCurrentDateTime(): string {
+    const date = new Date();
+    return date.toLocaleDateString('en-GB', { 
+      day: '2-digit', 
+      month: 'short', 
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
   }
 }
