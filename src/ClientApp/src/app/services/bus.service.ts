@@ -8,14 +8,11 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class BusService {
-  // environment.apiUrl already includes '/api' base
+ 
   private apiUrl = `${environment.apiUrl}/search`;
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Search for available buses based on from, to, and journeyDate
-   */
   searchBuses(searchParams: BusSearchParams): Observable<AvailableBusDto[]> {
     const params = new HttpParams()
       .set('from', searchParams.from)
@@ -23,5 +20,17 @@ export class BusService {
       .set('journeyDate', searchParams.journeyDate);
 
     return this.http.get<AvailableBusDto[]>(this.apiUrl, { params });
+  }
+
+  getCities(): Observable<string[]> {
+    const url = `${environment.apiUrl}/routes/cities`;
+    return this.http.get<string[]>(url);
+  }
+
+  getFirstAvailableDate(from: string, to: string, startDate?: string): Observable<{ date: string }>
+  {
+    let params = new HttpParams().set('from', from).set('to', to);
+    if (startDate) params = params.set('startDate', startDate);
+    return this.http.get<{ date: string }>(`${this.apiUrl}/first-available-date`, { params });
   }
 }

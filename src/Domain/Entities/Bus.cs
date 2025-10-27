@@ -40,6 +40,7 @@ public class Bus : BaseEntity
     {
         if (totalSeats <= 0) throw new ArgumentOutOfRangeException(nameof(totalSeats), "TotalSeats must be positive");
         if (totalSeats > 200) throw new ArgumentOutOfRangeException(nameof(totalSeats), "TotalSeats seems unrealistic (>200)");
+        // Standard seat count is 40 (10 rows × 4 seats in 2-2 configuration)
         TotalSeats = totalSeats;
         UpdatedAt = DateTime.UtcNow;
     }

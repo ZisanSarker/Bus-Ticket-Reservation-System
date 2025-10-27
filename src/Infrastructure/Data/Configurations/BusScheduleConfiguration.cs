@@ -18,6 +18,8 @@ public class BusScheduleConfiguration : IEntityTypeConfiguration<BusSchedule>
         builder.Property(s => s.StartTime).HasColumnType("time").IsRequired();
         builder.Property(s => s.ArrivalTime).HasColumnType("time").IsRequired();
         builder.Property(s => s.Price).HasColumnType("numeric(10,2)").IsRequired();
+        builder.Property(s => s.StartingCounter).HasMaxLength(200).IsRequired();
+        builder.Property(s => s.ArrivalCounter).HasMaxLength(200).IsRequired();
 
         builder.Property(s => s.CreatedAt).IsRequired();
         builder.Property(s => s.UpdatedAt);

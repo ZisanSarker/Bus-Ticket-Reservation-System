@@ -54,12 +54,40 @@ internal sealed class BookingService : IBookingService
             })
             .ToList();
 
+        // Build simple boarding/dropping points from schedule counters to align with DB seeder
+        var boardingPoints = new List<RouteStopDto>
+        {
+            new RouteStopDto
+            {
+                StopId = Guid.NewGuid(),
+                StopName = schedule.StartingCounter,
+                Time = schedule.StartTime.ToString("HH:mm"),
+                Sequence = 1
+            }
+        };
+
+        var droppingPoints = new List<RouteStopDto>
+        {
+            new RouteStopDto
+            {
+                StopId = Guid.NewGuid(),
+                StopName = schedule.ArrivalCounter,
+                Time = schedule.ArrivalTime.ToString("HH:mm"),
+                Sequence = 1
+            }
+        };
+
         return new SeatPlanDto
         {
             BusScheduleId = schedule.Id,
             BusId = bus.Id,
             TotalSeats = bus.TotalSeats,
-            Seats = seatDtos
+            Seats = seatDtos,
+            BoardingPoints = boardingPoints,
+            DroppingPoints = droppingPoints,
+            BaseFare = schedule.Price,
+            // Simple flat service charge per seat; could be moved to config
+            ServiceCharge = 20m
         };
     }
 
@@ -75,7 +103,6 @@ internal sealed class BookingService : IBookingService
         var bus = await _busRepo.GetByIdAsync(schedule.BusId, cancellationToken)
                   ?? throw new NotFoundException("Bus", schedule.BusId.ToString());
 
-        // Validate seats exist
         var requestedNumbers = input.SeatNumbers.Select(n => n).Distinct().OrderBy(n => n).ToArray();
         var seats = await _seatRepo.GetByBusIdAndNumbersAsync(bus.Id, requestedNumbers, cancellationToken);
         if (seats.Count != requestedNumbers.Length)
@@ -87,7 +114,6 @@ internal sealed class BookingService : IBookingService
 
         var seatIdByNumber = seats.ToDictionary(s => s.SeatNumber, s => s.Id);
 
-        // First availability check before entering transaction (fast-fail)
         var existingForSeats = await _ticketRepo.GetByScheduleAndSeatIdsAsync(schedule.Id, seatIdByNumber.Values, cancellationToken);
         if (existingForSeats.Count > 0)
         {
@@ -102,7 +128,6 @@ internal sealed class BookingService : IBookingService
 
         await _uow.ExecuteInTransactionAsync(async ct =>
         {
-            // Re-check inside transaction to avoid race conditions
             var existingInside = await _ticketRepo.GetByScheduleAndSeatIdsAsync(schedule.Id, seatIdByNumber.Values, ct);
             if (existingInside.Count > 0)
             {
@@ -113,11 +138,9 @@ internal sealed class BookingService : IBookingService
                 throw new SeatAlreadyBookedException(schedule.Id, alreadyBookedNumbers);
             }
 
-            // Create passenger
             var passenger = new Passenger(input.PassengerName, PhoneNumber.From(input.PassengerPhone));
             await _passengerRepo.AddAsync(passenger, ct);
 
-            // Create tickets
             var tickets = requestedNumbers
                 .Select(num => new Ticket(passenger.Id, schedule.Id, seatIdByNumber[num], DateTime.UtcNow))
                 .ToList();

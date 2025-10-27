@@ -11,8 +11,193 @@ import { ToastContainerComponent } from '../shared/toast-container/toast-contain
   selector: 'app-booking-form',
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, ToastContainerComponent],
-  templateUrl: './booking-form.component.html',
-  styleUrl: './booking-form.component.css'
+  template: `
+<div class="min-h-screen bg-gray-50 py-8">
+  <app-toast-container />
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Booking Success -->
+    @if (bookingResult) {
+      <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="text-center mb-6">
+          <div class="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
+            <svg class="h-10 w-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
+            </svg>
+          </div>
+          <h1 class="text-3xl font-bold text-gray-900 mb-2">Booking Confirmed!</h1>
+          <p class="text-gray-600">Your ticket has been successfully booked</p>
+        </div>
+
+        <div class="border-t border-b border-gray-200 py-6 mb-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Ticket ID</p>
+              <p class="text-lg font-semibold text-gray-900">{{ bookingResult.ticketIds.join(', ') }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Seat Numbers</p>
+              <p class="text-lg font-semibold text-gray-900">{{ bookingResult.seatNumbers.join(', ') }}</p>
+            </div>
+            <div>
+              <p class="text-sm text-gray-500 mb-1">Total Amount</p>
+              <p class="text-lg font-semibold text-green-600">\${{ bookingResult.totalPrice }}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-blue-50 border border-blue-200 rounded-md p-4 mb-6">
+          <p class="text-sm text-blue-800">
+            <strong>Note:</strong> Please save your Ticket ID for future reference. A confirmation email has been sent to your registered email address.
+          </p>
+        </div>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+          <button
+            (click)="printTicket()"
+            class="flex-1 bg-gray-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-gray-700 transition duration-200 flex items-center justify-center gap-2"
+          >
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/>
+            </svg>
+            Print Ticket
+          </button>
+          <button
+            (click)="goToSearch()"
+            class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 transition duration-200"
+          >
+            Book Another Ticket
+          </button>
+        </div>
+      </div>
+    } @else {
+      <!-- Booking Form -->
+      <div class="bg-white rounded-lg shadow-md p-8">
+        <div class="mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <h1 class="text-3xl font-bold text-gray-900">Complete Your Booking</h1>
+            <button
+              (click)="goBack()"
+              class="text-gray-600 hover:text-gray-900 flex items-center gap-2"
+            >
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
+              </svg>
+              Back
+            </button>
+          </div>
+          <p class="text-gray-600">Please fill in your details to complete the booking</p>
+        </div>
+
+        <!-- Error Message -->
+        @if (error) {
+          <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md mb-6">
+            {{ error }}
+          </div>
+        }
+
+        <!-- Booking Summary -->
+        <div class="bg-gray-50 rounded-lg p-4 mb-6">
+          <h2 class="text-lg font-semibold text-gray-900 mb-2">Booking Summary</h2>
+          <div class="flex justify-between text-sm">
+            <span class="text-gray-600">Selected Seats:</span>
+            <span class="font-semibold">{{ seatNumbers.length }} seat(s)</span>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()" class="space-y-6">
+          <!-- Passenger Name -->
+          <div>
+            <label for="passengerName" class="block text-sm font-medium text-gray-700 mb-2">
+              Full Name <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="passengerName"
+              type="text"
+              formControlName="passengerName"
+              placeholder="Enter your full name"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="bookingForm.get('passengerName')?.invalid && bookingForm.get('passengerName')?.touched"
+            />
+            @if (bookingForm.get('passengerName')?.invalid && bookingForm.get('passengerName')?.touched) {
+              <p class="text-red-500 text-sm mt-1">
+                @if (bookingForm.get('passengerName')?.errors?.['required']) {
+                  Name is required
+                } @else if (bookingForm.get('passengerName')?.errors?.['minlength']) {
+                  Name must be at least 2 characters
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Removed Email: Backend requires only name and phone -->
+
+          <!-- Phone -->
+          <div>
+            <label for="passengerPhone" class="block text-sm font-medium text-gray-700 mb-2">
+              Phone Number <span class="text-red-500">*</span>
+            </label>
+            <input
+              id="passengerPhone"
+              type="tel"
+              formControlName="passengerPhone"
+              placeholder="+1 (555) 123-4567"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              [class.border-red-500]="bookingForm.get('passengerPhone')?.invalid && bookingForm.get('passengerPhone')?.touched"
+            />
+            @if (bookingForm.get('passengerPhone')?.invalid && bookingForm.get('passengerPhone')?.touched) {
+              <p class="text-red-500 text-sm mt-1">
+                @if (bookingForm.get('passengerPhone')?.errors?.['required']) {
+                  Phone number is required
+                } @else if (bookingForm.get('passengerPhone')?.errors?.['pattern']) {
+                  Please enter a valid phone number
+                }
+              </p>
+            }
+          </div>
+
+          <!-- Terms and Conditions -->
+          <div class="bg-yellow-50 border border-yellow-200 rounded-md p-4">
+            <p class="text-sm text-yellow-800">
+              By proceeding with this booking, you agree to our terms and conditions. Please arrive at the boarding point at least 15 minutes before departure.
+            </p>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex gap-4">
+            <button
+              type="button"
+              (click)="goBack()"
+              class="flex-1 border border-gray-300 text-gray-700 px-6 py-3 rounded-md font-semibold hover:bg-gray-50 transition duration-200"
+            >
+              Cancel
+            </button>
+            <button
+              type="submit"
+              [disabled]="loading || bookingForm.invalid"
+              class="flex-1 bg-blue-600 text-white px-6 py-3 rounded-md font-semibold hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed transition duration-200"
+            >
+              @if (loading) {
+                <span>Processing...</span>
+              } @else {
+                <span>Confirm Booking</span>
+              }
+            </button>
+          </div>
+        </form>
+      </div>
+    }
+  </div>
+</div>
+  `,
+  styles: [`
+/* Component-specific styles */
+@media print {
+  button {
+    display: none;
+  }
+}
+  `]
 })
 export class BookingFormComponent implements OnInit {
   bookingForm!: FormGroup;
@@ -68,12 +253,11 @@ export class BookingFormComponent implements OnInit {
           this.bookingResult = result;
           this.loading = false;
           this.toast.success('Booking confirmed');
-          // Navigate back to seat plan and let it refresh
           this.router.navigate(['/bus', this.busScheduleId, 'seatplan']);
         },
         error: (err) => {
           this.error = err.error?.message || 'Failed to book seats. Please try again.';
-          this.toast.error(this.error);
+          this.toast.error(this.error ?? 'Unknown error');
           this.loading = false;
           console.error('Error booking seats:', err);
         }

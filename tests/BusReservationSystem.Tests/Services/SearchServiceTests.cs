@@ -12,7 +12,6 @@ public class SearchServiceTests
     [Fact]
     public async Task SearchAvailableBuses_Returns_Correct_Availability()
     {
-        // Arrange
         using var db = InMemoryDbContextFactory.CreateContext();
         var (bus, route, schedule, seats) = TestDataBuilder.SeedBasicScenario(db, totalSeats: 4, journeyDate: new DateOnly(2025, 10, 26), price: 750m);
 
@@ -31,10 +30,8 @@ public class SearchServiceTests
     var provider = services.BuildServiceProvider();
     var sut = provider.GetRequiredService<BusReservationSystem.Application.Contracts.Services.ISearchService>();
 
-        // Act
         var results = await sut.SearchAvailableBusesAsync("Dhaka", "Chittagong", new DateTime(2025, 10, 26));
 
-        // Assert
         Assert.Single(results);
         var available = results[0];
         Assert.Equal(schedule.Id, available.BusScheduleId);
@@ -42,7 +39,7 @@ public class SearchServiceTests
         Assert.Equal("Dhaka", available.From);
         Assert.Equal("Chittagong", available.To);
         Assert.Equal(4, available.TotalSeats);
-        Assert.Equal(2, available.SeatsLeft); // 2 booked, 2 left
+        Assert.Equal(2, available.SeatsLeft);
         Assert.Equal(750m, available.Price);
         Assert.Equal(schedule.JourneyDate, available.JourneyDate);
         Assert.Equal(schedule.StartTime, available.StartTime);

@@ -9,6 +9,8 @@ public sealed record AvailableBusDto
 
     public string From { get; init; } = string.Empty;
     public string To { get; init; } = string.Empty;
+    public string StartingCounter { get; init; } = string.Empty;
+    public string ArrivalCounter { get; init; } = string.Empty;
     public DateOnly JourneyDate { get; init; }
     public TimeOnly StartTime { get; init; }
     public TimeOnly ArrivalTime { get; init; }

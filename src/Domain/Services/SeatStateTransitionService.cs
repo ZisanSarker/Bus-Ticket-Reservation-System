@@ -11,7 +11,7 @@ public static class SeatStateTransitionService
         if (seat is null) throw new ArgumentNullException(nameof(seat));
 
         var current = seat.Status;
-        if (current == target) return; // no-op
+        if (current == target) return;
 
         switch (current)
         {
@@ -32,7 +32,7 @@ public static class SeatStateTransitionService
                 }
                 break;
             case SeatStatus.Sold:
-                // terminal state
+               
                 break;
         }
 

@@ -172,3 +172,28 @@ BEGIN
 END $EF$;
 COMMIT;
 
+START TRANSACTION;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20251026162239_AddCounterNamesToSchedule') THEN
+    ALTER TABLE "BusSchedules" ADD "ArrivalCounter" character varying(200) NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20251026162239_AddCounterNamesToSchedule') THEN
+    ALTER TABLE "BusSchedules" ADD "StartingCounter" character varying(200) NOT NULL DEFAULT '';
+    END IF;
+END $EF$;
+
+DO $EF$
+BEGIN
+    IF NOT EXISTS(SELECT 1 FROM "__EFMigrationsHistory" WHERE "MigrationId" = '20251026162239_AddCounterNamesToSchedule') THEN
+    INSERT INTO "__EFMigrationsHistory" ("MigrationId", "ProductVersion")
+    VALUES ('20251026162239_AddCounterNamesToSchedule', '9.0.10');
+    END IF;
+END $EF$;
+COMMIT;
+

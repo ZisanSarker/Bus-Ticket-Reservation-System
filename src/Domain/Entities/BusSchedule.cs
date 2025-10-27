@@ -13,14 +13,19 @@ public class BusSchedule : BaseEntity
 
     public decimal Price { get; private set; }
 
+    // Counter/boarding point names
+    public string StartingCounter { get; private set; } = string.Empty;
+    public string ArrivalCounter { get; private set; } = string.Empty;
+
     private BusSchedule() { }
 
-    public BusSchedule(Guid busId, Guid routeId, DateOnly journeyDate, TimeOnly startTime, TimeOnly arrivalTime, decimal price)
+    public BusSchedule(Guid busId, Guid routeId, DateOnly journeyDate, TimeOnly startTime, TimeOnly arrivalTime, decimal price, string startingCounter = "", string arrivalCounter = "")
     {
         SetBus(busId);
         SetRoute(routeId);
         SetSchedule(journeyDate, startTime, arrivalTime);
         SetPrice(price);
+        SetCounters(startingCounter, arrivalCounter);
         CreatedAt = DateTime.UtcNow;
     }
 
@@ -57,6 +62,13 @@ public class BusSchedule : BaseEntity
         if (price < 0) throw new ArgumentOutOfRangeException(nameof(price), "Price cannot be negative");
         if (price > 1_000_000m) throw new ArgumentOutOfRangeException(nameof(price), "Price seems unrealistic");
         Price = decimal.Round(price, 2);
+        UpdatedAt = DateTime.UtcNow;
+    }
+
+    public void SetCounters(string startingCounter, string arrivalCounter)
+    {
+        StartingCounter = startingCounter?.Trim() ?? string.Empty;
+        ArrivalCounter = arrivalCounter?.Trim() ?? string.Empty;
         UpdatedAt = DateTime.UtcNow;
     }
 

@@ -1,0 +1,4 @@
+/* Root component styles */
+:host {
+  display: block;
+}

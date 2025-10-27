@@ -9,28 +9,19 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class BookingService {
-  // environment.apiUrl already includes '/api' base
+ 
   private apiUrl = `${environment.apiUrl}/booking`;
 
   constructor(private http: HttpClient) {}
 
-  /**
-   * Get seat plan for a specific bus schedule
-   */
   getSeatPlan(busScheduleId: string): Observable<SeatPlanDto> {
     return this.http.get<SeatPlanDto>(`${this.apiUrl}/seatplan/${busScheduleId}`);
   }
 
-  /**
-   * Book seats for a passenger
-   */
   bookSeats(bookingData: BookSeatInputDto): Observable<BookSeatResultDto> {
     return this.http.post<BookSeatResultDto>(`${this.apiUrl}/book`, bookingData);
   }
 
-  /**
-   * Get booking details by ticket ID (not used in current flow)
-   */
   getBookingDetails(ticketId: string): Observable<BookSeatResultDto> {
     return this.http.get<BookSeatResultDto>(`${this.apiUrl}/${ticketId}`);
   }

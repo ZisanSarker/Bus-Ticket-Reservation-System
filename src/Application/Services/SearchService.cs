@@ -44,7 +44,7 @@ internal sealed class SearchService : ISearchService
         foreach (var s in schedules)
         {
             var bus = await _busRepo.GetByIdAsync(s.BusId, cancellationToken);
-            if (bus is null) continue; // or skip invalid
+            if (bus is null) continue;
 
             var bookedCount = await _ticketRepo.CountByScheduleAsync(s.Id, cancellationToken);
             var seatsLeft = Math.Max(0, bus.TotalSeats - bookedCount);
@@ -57,6 +57,8 @@ internal sealed class SearchService : ISearchService
                 CompanyName = bus.CompanyName,
                 From = routes.First(r => r.Id == s.RouteId).FromCity.ToString(),
                 To = routes.First(r => r.Id == s.RouteId).ToCity.ToString(),
+                StartingCounter = s.StartingCounter,
+                ArrivalCounter = s.ArrivalCounter,
                 JourneyDate = s.JourneyDate,
                 StartTime = s.StartTime,
                 ArrivalTime = s.ArrivalTime,
@@ -71,5 +73,19 @@ internal sealed class SearchService : ISearchService
             .OrderBy(r => r.StartTime)
             .ThenBy(r => r.Price)
             .ToList();
+    }
+
+    public async Task<DateOnly?> FindFirstAvailableDateAsync(string from, string to, DateOnly startDate, CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(from)) throw new ArgumentException("From cannot be empty", nameof(from));
+        if (string.IsNullOrWhiteSpace(to)) throw new ArgumentException("To cannot be empty", nameof(to));
+
+        var normalizedFrom = from.Trim();
+        var normalizedTo = to.Trim();
+        var routes = await _routeRepo.GetByCitiesAsync(normalizedFrom, normalizedTo, cancellationToken);
+        if (routes.Count == 0) return null;
+        var routeIds = routes.Select(r => r.Id).ToArray();
+        var first = await _scheduleRepo.GetFirstAvailableDateAsync(routeIds, startDate, cancellationToken);
+        return first;
     }
 }

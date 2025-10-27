@@ -3,6 +3,8 @@ export interface BookSeatInputDto {
   passengerName: string;
   passengerPhone: string;
   seatNumbers: number[];
+  boardingPointId?: string;
+  droppingPointId?: string;
 }
 
 export interface BookSeatResultDto {

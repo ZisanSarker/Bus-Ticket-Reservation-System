@@ -12,13 +12,11 @@ public static class DependencyInjection
         this IServiceCollection services,
         IConfiguration configuration)
     {
-        // Add DbContext with PostgreSQL
         services.AddDbContext<AppDbContext>(options =>
             options.UseNpgsql(
                 configuration.GetConnectionString("DefaultConnection"),
                 b => b.MigrationsAssembly(typeof(AppDbContext).Assembly.FullName)));
 
-        // Register repositories and UnitOfWork
         services.AddScoped<Application.Contracts.Persistence.IBusRepository, BusRepository>();
         services.AddScoped<Application.Contracts.Persistence.IRouteRepository, RouteRepository>();
         services.AddScoped<Application.Contracts.Persistence.IPassengerRepository, PassengerRepository>();

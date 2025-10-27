@@ -10,18 +10,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        // Add AutoMapper
-        services.AddAutoMapper(Assembly.GetExecutingAssembly());
-
-        // Add MediatR
-        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
-
-        // Add FluentValidation
-        services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
-
-        // Application services
-        services.AddScoped<ISearchService, SearchService>();
+        services.AddAutoMapper(typeof(DependencyInjection).Assembly);
+        services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(DependencyInjection).Assembly));
+        services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly);
         services.AddScoped<IBookingService, BookingService>();
+        services.AddScoped<ISearchService, SearchService>();
 
         return services;
     }

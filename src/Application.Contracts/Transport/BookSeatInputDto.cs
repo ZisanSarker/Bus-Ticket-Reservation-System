@@ -6,4 +6,6 @@ public sealed record BookSeatInputDto
     public string PassengerName { get; init; } = string.Empty;
     public string PassengerPhone { get; init; } = string.Empty;
     public IReadOnlyList<int> SeatNumbers { get; init; } = Array.Empty<int>();
+    public Guid? BoardingPointId { get; init; }
+    public Guid? DroppingPointId { get; init; }
 }

@@ -1,0 +1,260 @@
+[
+  {
+    "tripId": "HT101",
+    "operatorName": "Hanif Enterprise",
+    "busType": "AC Business Class",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "07:30 AM",
+    "arrivalTime": "01:30 PM",
+    "ticketPrice": 1200,
+    "seatsAvailable": 14,
+    "totalSeats": 40,
+    "boardingCounters": [
+      { "counterName": "Kallayanpur Counter", "boardingTime": "07:00 AM" },
+      { "counterName": "Gabtoli Terminal", "boardingTime": "07:10 AM" }
+    ],
+    "droppingPoints": ["Rajshahi University Gate", "Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "EN202",
+    "operatorName": "Ena Transport",
+    "busType": "Non-AC Hino",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "08:00 AM",
+    "arrivalTime": "02:00 PM",
+    "ticketPrice": 900,
+    "seatsAvailable": 22,
+    "totalSeats": 45,
+    "boardingCounters": [
+      { "counterName": "Mohakhali Counter", "boardingTime": "07:30 AM" }
+    ],
+    "droppingPoints": ["Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "DT303",
+    "operatorName": "Desh Travels",
+    "busType": "AC Sleeper",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "09:15 AM",
+    "arrivalTime": "03:00 PM",
+    "ticketPrice": 1500,
+    "seatsAvailable": 8,
+    "totalSeats": 30,
+    "boardingCounters": [
+      { "counterName": "Kallayanpur Counter", "boardingTime": "08:45 AM" },
+      { "counterName": "Technical Counter", "boardingTime": "09:00 AM" }
+    ],
+    "droppingPoints": ["Rajshahi University Gate", "Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "SH404",
+    "operatorName": "Shyamoli Paribahan",
+    "busType": "AC Business Class",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "10:00 AM",
+    "arrivalTime": "04:00 PM",
+    "ticketPrice": 1300,
+    "seatsAvailable": 19,
+    "totalSeats": 40,
+    "boardingCounters": [
+      { "counterName": "Gabtoli Terminal", "boardingTime": "09:30 AM" }
+    ],
+    "droppingPoints": ["Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "GR505",
+    "operatorName": "Green Line",
+    "busType": "AC Sleeper",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "11:30 AM",
+    "arrivalTime": "05:30 PM",
+    "ticketPrice": 1600,
+    "seatsAvailable": 5,
+    "totalSeats": 28,
+    "boardingCounters": [
+      { "counterName": "Kallayanpur Counter", "boardingTime": "11:00 AM" }
+    ],
+    "droppingPoints": ["Rajshahi University Gate"]
+  },
+  {
+    "tripId": "HT606",
+    "operatorName": "Hanif Enterprise",
+    "busType": "Non-AC Hino",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "12:00 PM",
+    "arrivalTime": "06:00 PM",
+    "ticketPrice": 950,
+    "seatsAvailable": 30,
+    "totalSeats": 45,
+    "boardingCounters": [
+      { "counterName": "Gabtoli Terminal", "boardingTime": "11:30 AM" }
+    ],
+    "droppingPoints": ["Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "EN707",
+    "operatorName": "Ena Transport",
+    "busType": "AC Business Class",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "01:00 PM",
+    "arrivalTime": "07:00 PM",
+    "ticketPrice": 1250,
+    "seatsAvailable": 12,
+    "totalSeats": 40,
+    "boardingCounters": [
+      { "counterName": "Mohakhali Counter", "boardingTime": "12:30 PM" }
+    ],
+    "droppingPoints": ["Rajshahi University Gate", "Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "DT808",
+    "operatorName": "Desh Travels",
+    "busType": "Non-AC Hino",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "02:30 PM",
+    "arrivalTime": "08:30 PM",
+    "ticketPrice": 900,
+    "seatsAvailable": 18,
+    "totalSeats": 45,
+    "boardingCounters": [
+      { "counterName": "Technical Counter", "boardingTime": "02:00 PM" }
+    ],
+    "droppingPoints": ["Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "SH909",
+    "operatorName": "Shyamoli Paribahan",
+    "busType": "AC Sleeper",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "03:00 PM",
+    "arrivalTime": "09:00 PM",
+    "ticketPrice": 1550,
+    "seatsAvailable": 7,
+    "totalSeats": 30,
+    "boardingCounters": [
+      { "counterName": "Kallayanpur Counter", "boardingTime": "02:30 PM" }
+    ],
+    "droppingPoints": ["Rajshahi University Gate"]
+  },
+  {
+    "tripId": "GR010",
+    "operatorName": "Green Line",
+    "busType": "Non-AC Hino",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "04:00 PM",
+    "arrivalTime": "10:00 PM",
+    "ticketPrice": 950,
+    "seatsAvailable": 25,
+    "totalSeats": 45,
+    "boardingCounters": [
+      { "counterName": "Gabtoli Terminal", "boardingTime": "03:30 PM" }
+    ],
+    "droppingPoints": ["Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "HT111",
+    "operatorName": "Hanif Enterprise",
+    "busType": "AC Business Class",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "05:30 PM",
+    "arrivalTime": "11:30 PM",
+    "ticketPrice": 1200,
+    "seatsAvailable": 10,
+    "totalSeats": 40,
+    "boardingCounters": [
+      { "counterName": "Kallayanpur Counter", "boardingTime": "05:00 PM" }
+    ],
+    "droppingPoints": ["Rajshahi University Gate", "Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "EN212",
+    "operatorName": "Ena Transport",
+    "busType": "AC Sleeper",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "06:00 PM",
+    "arrivalTime": "12:00 AM",
+    "ticketPrice": 1500,
+    "seatsAvailable": 6,
+    "totalSeats": 30,
+    "boardingCounters": [
+      { "counterName": "Mohakhali Counter", "boardingTime": "05:30 PM" }
+    ],
+    "droppingPoints": ["Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "DT313",
+    "operatorName": "Desh Travels",
+    "busType": "Non-AC Hino",
+    "route": "Dhaka to Rajshahi",
+    "date": "2025-10-27",
+    "departureTime": "07:00 PM",
+    "arrivalTime": "01:00 AM",
+    "ticketPrice": 900,
+    "seatsAvailable": 20,
+    "totalSeats": 45,
+    "boardingCounters": [
+      { "counterName": "Technical Counter", "boardingTime": "06:30 PM" }
+    ],
+    "droppingPoints": ["Rajshahi University Gate", "Shiroil Bus Stand"]
+  },
+  {
+    "tripId": "SR414",
+    "operatorName": "Soudia Paribahan",
+    "busType": "AC Business Class",
+    "route": "Dhaka to Chittagong",
+    "date": "2025-10-27",
+    "departureTime": "08:00 AM",
+    "arrivalTime": "02:00 PM",
+    "ticketPrice": 1400,
+    "seatsAvailable": 16,
+    "totalSeats": 38,
+    "boardingCounters": [
+      { "counterName": "Sayedabad Counter", "boardingTime": "07:30 AM" }
+    ],
+    "droppingPoints": ["Chittagong Dampara", "Chittagong New Market"]
+  },
+  {
+    "tripId": "TR515",
+    "operatorName": "Tungipara Express",
+    "busType": "Non-AC Hino",
+    "route": "Dhaka to Barisal",
+    "date": "2025-10-27",
+    "departureTime": "09:30 AM",
+    "arrivalTime": "03:30 PM",
+    "ticketPrice": 1100,
+    "seatsAvailable": 21,
+    "totalSeats": 42,
+    "boardingCounters": [
+      { "counterName": "Gabtoli Terminal", "boardingTime": "09:00 AM" }
+    ],
+    "droppingPoints": ["Barisal Nathullabad"]
+  },
+  {
+    "tripId": "SP616",
+    "operatorName": "Saintmartin Paribahan",
+    "busType": "AC Sleeper",
+    "route": "Dhaka to Cox's Bazar",
+    "date": "2025-10-27",
+    "departureTime": "10:30 PM",
+    "arrivalTime": "07:00 AM",
+    "ticketPrice": 2000,
+    "seatsAvailable": 4,
+    "totalSeats": 28,
+    "boardingCounters": [
+      { "counterName": "Fakirapool Counter", "boardingTime": "10:00 PM" }
+    ],
+    "droppingPoints": ["Cox's Bazar Bus Terminal"]
+  }
+]

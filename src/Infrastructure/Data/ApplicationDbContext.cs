@@ -10,7 +10,6 @@ public class AppDbContext : DbContext
     {
     }
 
-    // DbSets
     public DbSet<Bus> Buses => Set<Bus>();
     public DbSet<Route> Routes => Set<Route>();
     public DbSet<Passenger> Passengers => Set<Passenger>();
@@ -22,7 +21,6 @@ public class AppDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
-        // Apply configurations from assembly
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
     }
 

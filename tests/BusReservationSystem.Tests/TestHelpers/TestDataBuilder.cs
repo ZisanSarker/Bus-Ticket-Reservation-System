@@ -10,7 +10,7 @@ internal static class TestDataBuilder
         AppDbContext db,
         string from = "Dhaka",
         string to = "Chittagong",
-        int totalSeats = 8,
+        int totalSeats = 40,
         DateOnly? journeyDate = null,
         decimal price = 500m)
     {

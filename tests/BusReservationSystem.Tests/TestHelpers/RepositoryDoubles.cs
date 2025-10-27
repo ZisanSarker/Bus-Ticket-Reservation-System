@@ -27,6 +27,13 @@ internal sealed class TestRouteRepository : IRouteRepository
             .Where(r => r.FromCity == fromCity && r.ToCity == toCity)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<string>> GetAllCitiesAsync(CancellationToken cancellationToken = default)
+    {
+        var froms = _db.Routes.AsNoTracking().Select(r => EF.Property<string>(r, nameof(r.FromCity)));
+        var tos = _db.Routes.AsNoTracking().Select(r => EF.Property<string>(r, nameof(r.ToCity)));
+        return await froms.Concat(tos).Distinct().OrderBy(c => c).ToListAsync(cancellationToken);
+    }
 }
 
 internal sealed class TestPassengerRepository : IPassengerRepository
@@ -70,6 +77,24 @@ internal sealed class TestBusScheduleRepository : IBusScheduleRepository
 
     public Task<BusSchedule?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => _db.BusSchedules.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
+    public async Task<DateOnly?> GetFirstAvailableDateAsync(IEnumerable<Guid> routeIds, DateOnly startDate, CancellationToken cancellationToken = default)
+    {
+        var ids = routeIds.Distinct().ToArray();
+        var first = await _db.BusSchedules.AsNoTracking()
+            .Where(s => ids.Contains(s.RouteId) && s.JourneyDate >= startDate)
+            .OrderBy(s => s.JourneyDate)
+            .Select(s => s.JourneyDate)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        if (first == default)
+        {
+            var any = await _db.BusSchedules.AsNoTracking()
+                .AnyAsync(s => ids.Contains(s.RouteId) && s.JourneyDate >= startDate, cancellationToken);
+            if (!any) return null;
+        }
+        return first;
+    }
 }
 
 internal sealed class TestTicketRepository : ITicketRepository

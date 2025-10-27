@@ -26,4 +26,23 @@ internal sealed class BusScheduleRepository : IBusScheduleRepository
 
     public Task<BusSchedule?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         => _db.BusSchedules.AsNoTracking().FirstOrDefaultAsync(s => s.Id == id, cancellationToken);
+
+    public async Task<DateOnly?> GetFirstAvailableDateAsync(IEnumerable<Guid> routeIds, DateOnly startDate, CancellationToken cancellationToken = default)
+    {
+        var ids = routeIds.Distinct().ToArray();
+        var first = await _db.BusSchedules.AsNoTracking()
+            .Where(s => ids.Contains(s.RouteId) && s.JourneyDate >= startDate)
+            .OrderBy(s => s.JourneyDate)
+            .Select(s => s.JourneyDate)
+            .FirstOrDefaultAsync(cancellationToken);
+
+        // DateOnly is a struct; FirstOrDefault returns default(DateOnly) for empty. Need to detect "no result".
+        if (first == default)
+        {
+            var any = await _db.BusSchedules.AsNoTracking()
+                .AnyAsync(s => ids.Contains(s.RouteId) && s.JourneyDate >= startDate, cancellationToken);
+            if (!any) return null;
+        }
+        return first;
+    }
 }

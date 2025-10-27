@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc.Filters;
 namespace BusReservationSystem.WebApi.Filters;
 
 /// <summary>
-/// Action filter that validates model state automatically
 /// </summary>
 public class ValidateModelStateFilter : IActionFilter
 {

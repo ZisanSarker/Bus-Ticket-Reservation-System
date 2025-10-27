@@ -20,11 +20,6 @@ public class SearchController : ControllerBase
     /// <summary>
     /// Search for available buses based on route and date
     /// </summary>
-    /// <param name="from">Departure city</param>
-    /// <param name="to">Destination city</param>
-    /// <param name="journeyDate">Date of journey</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>List of available buses</returns>
     [HttpGet]
     [ProducesResponseType(typeof(List<AvailableBusDto>), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -59,5 +54,27 @@ public class SearchController : ControllerBase
         _logger.LogInformation("Found {Count} available buses", results.Count);
 
         return Ok(results);
+    }
+
+    /// <summary>
+    /// Get the earliest available date with schedules for the given route, on or after the specified start date.
+    /// </summary>
+    [HttpGet("first-available-date")]
+    [ProducesResponseType(typeof(object), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult> GetFirstAvailableDate(
+        [FromQuery] string from,
+        [FromQuery] string to,
+        [FromQuery] DateTime? startDate,
+        CancellationToken cancellationToken = default)
+    {
+        if (string.IsNullOrWhiteSpace(from)) return BadRequest(new { error = "From parameter is required" });
+        if (string.IsNullOrWhiteSpace(to)) return BadRequest(new { error = "To parameter is required" });
+
+        var start = DateOnly.FromDateTime((startDate ?? DateTime.Today).Date);
+        var first = await _searchService.FindFirstAvailableDateAsync(from, to, start, cancellationToken);
+        if (first is null) return NotFound();
+        return Ok(new { date = first });
     }
 }

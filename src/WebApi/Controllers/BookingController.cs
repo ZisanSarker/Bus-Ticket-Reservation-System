@@ -20,9 +20,6 @@ public class BookingController : ControllerBase
     /// <summary>
     /// Get seat plan for a specific bus schedule
     /// </summary>
-    /// <param name="busScheduleId">The bus schedule ID</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>Seat plan with availability status</returns>
     [HttpGet("seatplan/{busScheduleId:guid}")]
     [ProducesResponseType(typeof(SeatPlanDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -40,9 +37,6 @@ public class BookingController : ControllerBase
     /// <summary>
     /// Book seats for a bus schedule
     /// </summary>
-    /// <param name="input">Booking information including passenger details and seat numbers</param>
-    /// <param name="cancellationToken">Cancellation token</param>
-    /// <returns>Booking confirmation with ticket IDs</returns>
     [HttpPost("book")]
     [ProducesResponseType(typeof(BookSeatResultDto), StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]

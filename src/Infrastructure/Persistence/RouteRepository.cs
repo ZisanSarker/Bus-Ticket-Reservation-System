@@ -25,4 +25,17 @@ internal sealed class RouteRepository : IRouteRepository
             .Where(r => r.FromCity == fromCity && r.ToCity == toCity)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<IReadOnlyList<string>> GetAllCitiesAsync(CancellationToken cancellationToken = default)
+    {
+        // Use EF.Property to access the underlying string columns for server-side distinct/sort
+        var froms = _db.Routes.AsNoTracking().Select(r => EF.Property<string>(r, nameof(r.FromCity)));
+        var tos = _db.Routes.AsNoTracking().Select(r => EF.Property<string>(r, nameof(r.ToCity)));
+
+        return await froms
+            .Concat(tos)
+            .Distinct()
+            .OrderBy(c => c)
+            .ToListAsync(cancellationToken);
+    }
 }
