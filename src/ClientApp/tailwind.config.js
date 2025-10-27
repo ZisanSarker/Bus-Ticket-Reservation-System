@@ -6,25 +6,21 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        // Primary Action Color
         primary: {
           DEFAULT: '#E60000',
           hover: '#CC0000',
           light: '#FF1A1A',
         },
-        // Text Colors
         text: {
           primary: '#333333',
           secondary: '#888888',
           light: '#AAAAAA',
         },
-        // Background Colors
         background: {
           main: '#FFFFFF',
           page: '#F5F5F5',
           card: '#FFFFFF',
         },
-        // Accent Colors
         accent: {
           success: '#28A745',
           'success-light': '#D4EDDA',
@@ -32,7 +28,6 @@ module.exports = {
           muted: '#F0F0F5',
           'muted-dark': '#666666',
         },
-        // Seat Status Colors
         seat: {
           'booked-male': '#9B59B6',
           'booked-female': '#E91E63',

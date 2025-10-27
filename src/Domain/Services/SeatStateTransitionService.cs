@@ -5,7 +5,6 @@ namespace BusReservationSystem.Domain.Services;
 
 public static class SeatStateTransitionService
 {
-    // Contract: allows only Available -> Booked -> Sold; throws on invalid transitions
     public static void Transition(Seat seat, SeatStatus target)
     {
         if (seat is null) throw new ArgumentNullException(nameof(seat));

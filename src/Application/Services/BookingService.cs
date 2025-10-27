@@ -54,7 +54,6 @@ internal sealed class BookingService : IBookingService
             })
             .ToList();
 
-        // Build simple boarding/dropping points from schedule counters to align with DB seeder
         var boardingPoints = new List<RouteStopDto>
         {
             new RouteStopDto
@@ -86,7 +85,6 @@ internal sealed class BookingService : IBookingService
             BoardingPoints = boardingPoints,
             DroppingPoints = droppingPoints,
             BaseFare = schedule.Price,
-            // Simple flat service charge per seat; could be moved to config
             ServiceCharge = 20m
         };
     }

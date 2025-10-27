@@ -14,7 +14,6 @@ public class RouteConfiguration : IEntityTypeConfiguration<Route>
 
         builder.HasKey(r => r.Id);
 
-        // Value converters for City and DistanceKm
         var cityToString = new ValueConverter<City, string>(
             c => c.Name,
             s => City.From(s));
@@ -40,7 +39,6 @@ public class RouteConfiguration : IEntityTypeConfiguration<Route>
         builder.Property(r => r.CreatedAt).IsRequired();
         builder.Property(r => r.UpdatedAt);
 
-        // Unique constraint to avoid duplicate routes
         builder.HasIndex(r => new { r.FromCity, r.ToCity }).IsUnique();
     }
 }

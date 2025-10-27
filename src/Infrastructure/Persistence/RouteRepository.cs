@@ -28,7 +28,6 @@ internal sealed class RouteRepository : IRouteRepository
 
     public async Task<IReadOnlyList<string>> GetAllCitiesAsync(CancellationToken cancellationToken = default)
     {
-        // Use EF.Property to access the underlying string columns for server-side distinct/sort
         var froms = _db.Routes.AsNoTracking().Select(r => EF.Property<string>(r, nameof(r.FromCity)));
         var tos = _db.Routes.AsNoTracking().Select(r => EF.Property<string>(r, nameof(r.ToCity)));
 

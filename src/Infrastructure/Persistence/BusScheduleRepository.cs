@@ -36,7 +36,6 @@ internal sealed class BusScheduleRepository : IBusScheduleRepository
             .Select(s => s.JourneyDate)
             .FirstOrDefaultAsync(cancellationToken);
 
-        // DateOnly is a struct; FirstOrDefault returns default(DateOnly) for empty. Need to detect "no result".
         if (first == default)
         {
             var any = await _db.BusSchedules.AsNoTracking()

@@ -20,7 +20,6 @@ public class SeatConfiguration : IEntityTypeConfiguration<Seat>
         builder.Property(s => s.CreatedAt).IsRequired();
         builder.Property(s => s.UpdatedAt);
 
-        // Unique seat number per bus
         builder.HasIndex(s => new { s.BusId, s.SeatNumber }).IsUnique();
         builder.HasIndex(s => s.BusId);
     }

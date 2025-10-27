@@ -17,11 +17,9 @@ public sealed record PhoneNumber
             throw new ArgumentException("Phone number cannot be empty", nameof(value));
 
         var normalized = value.Trim();
-        // Basic length check
         if (normalized.Length < 7 || normalized.Length > 20)
             throw new ArgumentException("Phone number length must be between 7 and 20 characters", nameof(value));
 
-        // Light validation: allow digits, spaces, dashes, and leading +
         if (!Regex.IsMatch(normalized, "^[+]?[- 0-9]+$"))
             throw new ArgumentException("Phone number contains invalid characters", nameof(value));
 

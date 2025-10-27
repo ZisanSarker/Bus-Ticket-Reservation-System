@@ -20,7 +20,6 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.Property(t => t.CreatedAt).IsRequired();
         builder.Property(t => t.UpdatedAt);
 
-        // Prevent double booking of a seat for the same schedule
         builder.HasIndex(t => new { t.BusScheduleId, t.SeatId }).IsUnique();
 
         builder.HasIndex(t => t.PassengerId);

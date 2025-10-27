@@ -8,7 +8,7 @@ public class Seat : BaseEntity
     public Guid BusId { get; private set; }
     public int SeatNumber { get; private set; }
     public int Row { get; private set; }
-    public SeatStatus Status { get; internal set; } = SeatStatus.Available; // internal setter for domain service
+    public SeatStatus Status { get; internal set; } = SeatStatus.Available;
 
     private Seat() { }
 

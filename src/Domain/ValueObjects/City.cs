@@ -16,7 +16,17 @@ public sealed record City
         var trimmed = name.Trim();
         if (trimmed.Length > 100)
             throw new ArgumentException("City name is too long (max 100)", nameof(name));
-        return new City(trimmed);
+        
+        var normalized = NormalizeCityName(trimmed);
+        return new City(normalized);
+    }
+
+    private static string NormalizeCityName(string name)
+    {
+        var words = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+        var normalized = string.Join(' ', words.Select(word => 
+            char.ToUpper(word[0]) + word.Substring(1).ToLower()));
+        return normalized;
     }
 
     public override string ToString() => Name;

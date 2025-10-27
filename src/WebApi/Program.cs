@@ -66,7 +66,6 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-// Only redirect to HTTPS in production
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();

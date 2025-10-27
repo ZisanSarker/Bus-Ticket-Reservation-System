@@ -13,7 +13,6 @@ public class BusSchedule : BaseEntity
 
     public decimal Price { get; private set; }
 
-    // Counter/boarding point names
     public string StartingCounter { get; private set; } = string.Empty;
     public string ArrivalCounter { get; private set; } = string.Empty;
 
@@ -48,10 +47,8 @@ public class BusSchedule : BaseEntity
         JourneyDate = journeyDate;
         StartTime = startTime;
         ArrivalTime = arrivalTime;
-        // Basic validation: same-day arrival must be after start
         if (ArrivalTime <= StartTime)
         {
-            // Allow overnight journeys only if arrival is on next day—domain rule could be extended later
             throw new ArgumentException("ArrivalTime must be after StartTime for same-day journeys");
         }
         UpdatedAt = DateTime.UtcNow;

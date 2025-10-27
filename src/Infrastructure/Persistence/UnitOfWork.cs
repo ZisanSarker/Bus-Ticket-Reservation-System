@@ -17,7 +17,6 @@ internal sealed class UnitOfWork : IUnitOfWork
     {
         if (action is null) throw new ArgumentNullException(nameof(action));
 
-        // Use EF Core transaction to ensure atomicity
         await using var tx = await _db.Database.BeginTransactionAsync(cancellationToken);
         try
         {
